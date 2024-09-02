@@ -16,7 +16,7 @@ import { type AdapterAccount } from 'next-auth/adapters';
 export const createTable = pgTableCreator((name) => `subhub_${name}`);
 
 export const users = createTable('user', {
-  id: serial('id').primaryKey(),
+  id: varchar('id', { length: 255 }).primaryKey(), // Change this line
   email: varchar('email', { length: 255 }).notNull().unique(),
   name: varchar('name', { length: 255 }),
   passwordHash: varchar('password_hash', { length: 255 }),
@@ -37,7 +37,7 @@ export const providers = createTable('provider', {
 
 export const subscriptions = createTable('subscription', {
   id: serial('id').primaryKey(),
-  userId: integer('user_id').references(() => users.id),
+  userId: varchar('user_id', { length: 255 }).references(() => users.id),
   providerId: integer('provider_id').references(() => providers.id),
   planName: varchar('plan_name', { length: 255 }),
   amount: decimal('amount', { precision: 10, scale: 2 }),
@@ -48,7 +48,7 @@ export const subscriptions = createTable('subscription', {
 
 export const payments = createTable('payment', {
   id: serial('id').primaryKey(),
-  userId: integer('user_id').references(() => users.id),
+  userId: varchar('user_id', { length: 255 }).references(() => users.id),
   subscriptionId: integer('subscription_id').references(() => subscriptions.id),
   amount: decimal('amount', { precision: 10, scale: 2 }),
   status: varchar('status', { length: 50 }),
@@ -57,7 +57,7 @@ export const payments = createTable('payment', {
 
 export const paymentAssurance = createTable('payment_assurance', {
   id: serial('id').primaryKey(),
-  userId: integer('user_id').references(() => users.id),
+  userId: varchar('user_id', { length: 255 }).references(() => users.id),
   coveredAmount: decimal('covered_amount', { precision: 10, scale: 2 }),
   startDate: date('start_date'),
   endDate: date('end_date'),
@@ -67,7 +67,7 @@ export const paymentAssurance = createTable('payment_assurance', {
 
 export const userAnalytics = createTable('user_analytics', {
   id: serial('id').primaryKey(),
-  userId: integer('user_id').references(() => users.id),
+  userId: varchar('user_id', { length: 255 }).references(() => users.id),
   totalSaved: decimal('total_saved', { precision: 10, scale: 2 }),
   subscriptionCount: integer('subscription_count'),
   lastOptimizationDate: date('last_optimization_date'),
@@ -168,3 +168,20 @@ export const verificationTokens = createTable(
     compoundKey: primaryKey({ columns: [vt.identifier, vt.token] }),
   })
 );
+
+export const posts = createTable('post', {
+  id: varchar('id', { length: 255 }).primaryKey(),
+  name: varchar('name', { length: 255 }).notNull(),
+  createdById: varchar('created_by_id', { length: 255 })
+    .notNull()
+    .references(() => users.id),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
+export const postsRelations = relations(posts, ({ one }) => ({
+  createdBy: one(users, {
+    fields: [posts.createdById],
+    references: [users.id],
+  }),
+}));

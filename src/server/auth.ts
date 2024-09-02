@@ -63,7 +63,8 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
     redirect({ url, baseUrl }) {
-      if (url.startsWith(baseUrl)) return url;
+      // Redirect to /home after successful sign-in
+      if (url.startsWith(baseUrl)) return `${baseUrl}/home`;
       else if (url.startsWith('/')) return new URL(url, baseUrl).toString();
       return baseUrl;
     },

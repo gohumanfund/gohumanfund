@@ -3,6 +3,7 @@ import { createTRPCRouter, protectedProcedure, publicProcedure } from '../trpc';
 import { users } from '../../db/schema';
 import { eq } from 'drizzle-orm';
 import bcrypt from 'bcrypt';
+import { v4 as uuidv4 } from 'uuid'; // Make sure to install uuid package
 
 export const userRouter = createTRPCRouter({
   register: publicProcedure
@@ -26,6 +27,7 @@ export const userRouter = createTRPCRouter({
       const newUser = await ctx.db
         .insert(users)
         .values({
+          id: uuidv4(), // Generate a new UUID for the user
           email: input.email,
           passwordHash,
           name: input.name,

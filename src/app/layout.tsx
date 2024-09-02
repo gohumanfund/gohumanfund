@@ -4,6 +4,8 @@ import { GeistSans } from 'geist/font/sans';
 import { type Metadata } from 'next';
 
 import { TRPCReactProvider } from '~/trpc/react';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '~/server/auth';
 
 export const metadata: Metadata = {
   title: 'SubHub - Unified Subscription Management',
@@ -11,9 +13,11 @@ export const metadata: Metadata = {
   icons: [{ rel: 'icon', url: '/favicon.ico' }],
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const session = await getServerSession(authOptions);
+
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
       <body>
