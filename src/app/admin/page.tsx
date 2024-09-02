@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { api } from '~/trpc/react';
 import { AdminTile } from '../_components/AdminTile';
@@ -9,12 +9,17 @@ export default function AdminDashboard() {
   const router = useRouter();
   const { data: user, isLoading } = api.user.getProfile.useQuery();
 
+  useEffect(() => {
+    if (!isLoading && (!user || !user.admin)) {
+      router.push('/home');
+    }
+  }, [user, isLoading, router]);
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
   if (!user || !user.admin) {
-    router.push('/home');
     return null;
   }
 
