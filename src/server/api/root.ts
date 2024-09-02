@@ -1,5 +1,9 @@
-import { postRouter } from "~/server/api/routers/post";
-import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
+import { createTRPCRouter } from '~/server/api/trpc';
+// import AppRouter from "next/dist/client/components/app-router";
+import { postRouter } from '~/server/api/routers/post';
+import { userRouter } from '~/server/api/routers/user';
+import { subscriptionRouter } from '~/server/api/routers/subscription';
+import { type AnyRouter, type inferRouterContext } from '@trpc/server';
 
 /**
  * This is the primary router for your server.
@@ -8,6 +12,8 @@ import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
  */
 export const appRouter = createTRPCRouter({
   post: postRouter,
+  user: userRouter,
+  subscription: subscriptionRouter,
 });
 
 // export type definition of API
@@ -20,4 +26,14 @@ export type AppRouter = typeof appRouter;
  * const res = await trpc.post.all();
  *       ^? Post[]
  */
+const createCallerFactory = <TRouter extends AnyRouter>(router: TRouter) => {
+  return (ctx: inferRouterContext<TRouter>) => {
+    return router.createCaller(ctx);
+  };
+};
+
 export const createCaller = createCallerFactory(appRouter);
+
+// export const createCaller = (ctx: inferRouterContext<AppRouter>) => {
+//   return appRouter.createCaller(ctx);
+// };
