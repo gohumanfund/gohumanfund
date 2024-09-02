@@ -74,12 +74,17 @@ CREATE TABLE IF NOT EXISTS "subhub_user_analytics" (
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "subhub_user" (
 	"id" varchar(255) PRIMARY KEY NOT NULL,
-	"email" varchar(255) NOT NULL,
 	"name" varchar(255),
+	"email" varchar(255) NOT NULL,
+	"email_verified" timestamp,
+	"image" varchar(255),
 	"password_hash" varchar(255),
 	"created_at" timestamp DEFAULT now(),
 	"plan_tier" varchar(50),
 	"total_subscription_value" numeric(10, 2),
+	"banned_reason" text,
+	"banned_until" timestamp,
+	"banned_at" timestamp,
 	CONSTRAINT "subhub_user_email_unique" UNIQUE("email")
 );
 --> statement-breakpoint

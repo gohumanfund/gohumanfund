@@ -10,6 +10,7 @@ import GoogleProvider from 'next-auth/providers/google';
 import AppleProvider from 'next-auth/providers/apple';
 import FacebookProvider from 'next-auth/providers/facebook';
 import CredentialsProvider from 'next-auth/providers/credentials';
+const { compare } = await import('bcrypt');
 
 import { env } from '~/env';
 import { db } from '~/server/db';
@@ -49,6 +50,26 @@ declare module 'next-auth' {
  */
 export const authOptions: NextAuthOptions = {
   callbacks: {
+    signIn: async ({ user, account, profile, email, credentials }) => {
+      // Custom logic here
+      console.log('Sign-in attempt:', { user, account, profile, email });
+
+      // Check if the user is banned
+      const dbUser = await db.query.users.findFirst({
+        where: eq(users.id, user.id),
+      });
+
+      if (
+        dbUser?.bannedAt &&
+        dbUser?.bannedUntil &&
+        dbUser?.bannedAt < new Date() &&
+        new Date() < dbUser.bannedUntil
+      ) {
+        console.log('Sign-in blocked: User is banned');
+        return false;
+      }
+      return true; // Allow sign-in to proceed
+    },
     session: ({ session, token }) => ({
       ...session,
       user: {
@@ -123,20 +144,17 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
-        const user = await db.query.users.findFirst({
+        const userInDB = await db.query.users.findFirst({
           where: eq(users.email, credentials.email),
         });
 
-        if (!user || !user.password) {
+        if (!userInDB || !userInDB.passwordHash) {
           return null;
         }
 
-        // Dynamically import bcrypt only on the server side
-        const { compare } = await import('bcrypt');
-
         const isPasswordValid = await compare(
           credentials.password,
-          user.password
+          userInDB.passwordHash
         );
 
         if (!isPasswordValid) {
@@ -145,9 +163,9 @@ export const authOptions: NextAuthOptions = {
         }
 
         const userForToken = {
-          id: user.id,
-          email: user.email,
-          name: user.name,
+          id: userInDB.id,
+          email: userInDB.email,
+          name: userInDB.name,
         };
         console.log('Authorized user:', userForToken);
         return userForToken;
@@ -161,10 +179,9 @@ export const authOptions: NextAuthOptions = {
   session: {
     strategy: 'jwt',
   },
-  secret: env.NEXTAUTH_SECRET,
+  secret: env.NEXTAUTH_SECRET as string,
   jwt: {
-    secret: env.NEXTAUTH_SECRET,
-    encryption: true,
+    secret: env.NEXTAUTH_SECRET as string,
   },
 };
 

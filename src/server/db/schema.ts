@@ -10,15 +10,19 @@ import {
   varchar,
   decimal,
   date,
+  boolean,
 } from 'drizzle-orm/pg-core';
 import { type AdapterAccount } from 'next-auth/adapters';
 
 export const createTable = pgTableCreator((name) => `subhub_${name}`);
 
 export const users = createTable('user', {
-  id: varchar('id', { length: 255 }).primaryKey(), // Change this line
-  email: varchar('email', { length: 255 }).notNull().unique(),
+  id: varchar('id', { length: 255 }).notNull().primaryKey(),
   name: varchar('name', { length: 255 }),
+  email: varchar('email', { length: 255 }).notNull().unique(),
+  emailVerified: timestamp('email_verified', { mode: 'date' }),
+  image: varchar('image', { length: 255 }),
+  // Additional custom fields
   passwordHash: varchar('password_hash', { length: 255 }),
   createdAt: timestamp('created_at').defaultNow(),
   planTier: varchar('plan_tier', { length: 50 }),
@@ -26,7 +30,12 @@ export const users = createTable('user', {
     precision: 10,
     scale: 2,
   }),
+  bannedReason: text('banned_reason'),
+  bannedUntil: timestamp('banned_until'),
+  bannedAt: timestamp('banned_at'),
 });
+
+export const userIsBanned = sql`CASE WHEN "banned_until" IS NOT NULL AND CURRENT_TIMESTAMP < "banned_until" THEN true ELSE false END`;
 
 export const providers = createTable('provider', {
   id: serial('id').primaryKey(),

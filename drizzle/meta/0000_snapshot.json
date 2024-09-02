@@ -1,5 +1,5 @@
 {
-  "id": "2111d45c-8c36-4b85-9b87-7d6de20a3fe3",
+  "id": "1cf89c1b-8950-4929-942a-53afb76cb8b8",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -554,14 +554,26 @@
           "primaryKey": true,
           "notNull": true
         },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
         "email": {
           "name": "email",
           "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true
         },
-        "name": {
-          "name": "name",
+        "email_verified": {
+          "name": "email_verified",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "image": {
+          "name": "image",
           "type": "varchar(255)",
           "primaryKey": false,
           "notNull": false
@@ -588,6 +600,24 @@
         "total_subscription_value": {
           "name": "total_subscription_value",
           "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "banned_reason": {
+          "name": "banned_reason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "banned_until": {
+          "name": "banned_until",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "banned_at": {
+          "name": "banned_at",
+          "type": "timestamp",
           "primaryKey": false,
           "notNull": false
         }
