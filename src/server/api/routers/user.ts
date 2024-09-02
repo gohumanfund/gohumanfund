@@ -60,4 +60,8 @@ export const userRouter = createTRPCRouter({
         .returning();
       return updatedUser[0];
     }),
+
+  getAllUsers: protectedProcedure.query(async ({ ctx }) => {
+    return ctx.db.select().from(users);
+  }),
 });

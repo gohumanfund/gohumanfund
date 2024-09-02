@@ -3,6 +3,8 @@ import { createTRPCRouter } from '~/server/api/trpc';
 import { postRouter } from '~/server/api/routers/post';
 import { userRouter } from '~/server/api/routers/user';
 import { subscriptionRouter } from '~/server/api/routers/subscription';
+import { providerRouter } from '~/server/api/routers/provider';
+import { systemRouter } from '~/server/api/routers/system';
 import { type AnyRouter, type inferRouterContext } from '@trpc/server';
 
 /**
@@ -14,6 +16,8 @@ export const appRouter = createTRPCRouter({
   post: postRouter,
   user: userRouter,
   subscription: subscriptionRouter,
+  provider: providerRouter,
+  system: systemRouter,
 });
 
 // export type definition of API
