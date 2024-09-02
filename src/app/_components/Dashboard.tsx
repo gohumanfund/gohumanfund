@@ -1,4 +1,6 @@
-import React, { ReactNode } from 'react';
+'use client';
+
+import React, { ReactNode, useEffect, useState } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import { CreditCard, AlertCircle, Plus, Settings } from 'lucide-react';
 import { api } from '~/trpc/react';
@@ -49,12 +51,17 @@ const colorPalette = [
 ];
 
 export function Dashboard() {
+  const [isClient, setIsClient] = useState(false);
   const { data: profile, isLoading: profileLoading } =
     api.user.getProfile.useQuery();
   const { data: subscriptions, isLoading: subscriptionsLoading } =
     api.subscription.getUserSubscriptions.useQuery();
 
-  if (profileLoading || subscriptionsLoading) {
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient || profileLoading || subscriptionsLoading) {
     return <div>Loading...</div>;
   }
 
