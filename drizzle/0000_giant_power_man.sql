@@ -85,6 +85,7 @@ CREATE TABLE IF NOT EXISTS "subhub_user" (
 	"banned_reason" text,
 	"banned_until" timestamp,
 	"banned_at" timestamp,
+	"admin" boolean DEFAULT false NOT NULL,
 	CONSTRAINT "subhub_user_email_unique" UNIQUE("email")
 );
 --> statement-breakpoint

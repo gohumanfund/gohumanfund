@@ -1,5 +1,5 @@
 {
-  "id": "1cf89c1b-8950-4929-942a-53afb76cb8b8",
+  "id": "470b5bd6-0a50-4143-8178-f694b5ffc53b",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -620,6 +620,13 @@
           "type": "timestamp",
           "primaryKey": false,
           "notNull": false
+        },
+        "admin": {
+          "name": "admin",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
         }
       },
       "indexes": {},

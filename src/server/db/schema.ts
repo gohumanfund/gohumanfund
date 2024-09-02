@@ -33,6 +33,7 @@ export const users = createTable('user', {
   bannedReason: text('banned_reason'),
   bannedUntil: timestamp('banned_until'),
   bannedAt: timestamp('banned_at'),
+  admin: boolean('admin').default(false).notNull(),
 });
 
 export const userIsBanned = sql`CASE WHEN "banned_until" IS NOT NULL AND CURRENT_TIMESTAMP < "banned_until" THEN true ELSE false END`;
