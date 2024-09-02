@@ -32,6 +32,14 @@ CREATE TABLE IF NOT EXISTS "subhub_payment" (
 	"payment_date" timestamp
 );
 --> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "subhub_post" (
+	"id" varchar(255) PRIMARY KEY NOT NULL,
+	"name" varchar(255) NOT NULL,
+	"created_by_id" varchar(255) NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "subhub_provider" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"name" varchar(255) NOT NULL,
@@ -102,6 +110,12 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "subhub_payment" ADD CONSTRAINT "subhub_payment_subscription_id_subhub_subscription_id_fk" FOREIGN KEY ("subscription_id") REFERENCES "public"."subhub_subscription"("id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "subhub_post" ADD CONSTRAINT "subhub_post_created_by_id_subhub_user_id_fk" FOREIGN KEY ("created_by_id") REFERENCES "public"."subhub_user"("id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

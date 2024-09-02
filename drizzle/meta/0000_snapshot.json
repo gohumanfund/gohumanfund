@@ -1,5 +1,5 @@
 {
-  "id": "ca582d9a-105f-4848-b814-a083b8978cdf",
+  "id": "2111d45c-8c36-4b85-9b87-7d6de20a3fe3",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -246,6 +246,62 @@
           "tableTo": "subhub_subscription",
           "columnsFrom": [
             "subscription_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.subhub_post": {
+      "name": "subhub_post",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(255)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_by_id": {
+          "name": "created_by_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "subhub_post_created_by_id_subhub_user_id_fk": {
+          "name": "subhub_post_created_by_id_subhub_user_id_fk",
+          "tableFrom": "subhub_post",
+          "tableTo": "subhub_user",
+          "columnsFrom": [
+            "created_by_id"
           ],
           "columnsTo": [
             "id"
