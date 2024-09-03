@@ -100,7 +100,6 @@ export const userRouter = createTRPCRouter({
           email: input.email,
           passwordHash,
           name: input.name,
-          planTier: 'Basic',
           admin: input.admin,
         })
         .returning();

@@ -11,10 +11,13 @@ import {
   decimal,
   date,
   boolean,
+  pgTable,
 } from 'drizzle-orm/pg-core';
 import { type AdapterAccount } from 'next-auth/adapters';
 
-export const createTable = pgTableCreator((name: string) => `gohumanfund_${name}`);
+export const createTable = pgTableCreator(
+  (name: string) => `gohumanfund_${name}`
+);
 
 export const users = createTable('user', {
   id: varchar('id', { length: 255 }).notNull().primaryKey(),
@@ -29,6 +32,7 @@ export const users = createTable('user', {
   bannedUntil: timestamp('banned_until'),
   bannedAt: timestamp('banned_at'),
   admin: boolean('admin').default(false).notNull(),
+  lastLogin: timestamp('last_login'),
 });
 
 export const userIsBanned = sql`CASE WHEN "banned_until" IS NOT NULL AND CURRENT_TIMESTAMP < "banned_until" THEN true ELSE false END`;
@@ -91,19 +95,57 @@ export const verificationTokens = createTable(
   })
 );
 
-export const posts = createTable('post', {
-  id: varchar('id', { length: 255 }).primaryKey(),
-  name: varchar('name', { length: 255 }).notNull(),
-  createdById: varchar('created_by_id', { length: 255 })
-    .notNull()
-    .references(() => users.id),
+export const learningResources = createTable('learning_resource', {
+  id: serial('id').primaryKey(),
+  type: varchar('type', { length: 50 }).notNull(), // 'video' or 'article'
+  title: varchar('title', { length: 255 }).notNull(),
+  description: text('description').notNull(),
+  content: text('content').notNull(),
+  link: varchar('link', { length: 255 }),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
-export const postsRelations = relations(posts, ({ one }) => ({
-  createdBy: one(users, {
-    fields: [posts.createdById],
-    references: [users.id],
-  }),
-}));
+export const workshops = createTable('workshop', {
+  id: serial('id').primaryKey(),
+  title: varchar('title', { length: 255 }).notNull(),
+  description: text('description').notNull(),
+  date: timestamp('date').notNull(),
+  registrationLink: varchar('registration_link', { length: 255 }),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+export const successStories = createTable('success_story', {
+  id: serial('id').primaryKey(),
+  title: varchar('title', { length: 255 }).notNull(),
+  summary: text('summary').notNull(),
+  content: text('content').notNull(),
+  founderName: varchar('founder_name', { length: 255 }),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+export const apiLogs = pgTable('api_logs', {
+  id: serial('id').primaryKey(),
+  timestamp: timestamp('timestamp').defaultNow(),
+  requestsPerMinute: integer('requests_per_minute'),
+});
+
+export const subscriptions = pgTable('subscriptions', {
+  id: serial('id').primaryKey(),
+  userId: varchar('user_id', { length: 255 }).references(() => users.id),
+  status: text('status', { enum: ['active', 'inactive', 'cancelled'] }),
+  createdAt: timestamp('created_at').defaultNow(),
+});
+
+export const ALL_TABLES = [
+  users,
+  accounts,
+  sessions,
+  verificationTokens,
+  learningResources,
+  workshops,
+  successStories,
+  apiLogs,
+  subscriptions,
+];
+
+export const ALL_RELATIONS = [];

@@ -9,12 +9,15 @@
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
-    "dev:seed": "bun run src/server/seed.ts",
-    "dev:from-scratch": "bun dev:clean && bun dev:seed && bun dev",
+    "db:schema-updated": "bun db:generate && bun db:migrate && bun db:push",
+    "dev:from-scratch": "bun dev:clean && bun db:seed && bun dev",
     "dev:clean": "rm -rf drizzle || true && (docker stop $(docker ps -aq) || true) && (docker rm $(docker ps -aq) || true) && ./start-database.sh && sleep 10 && bun db:generate && bun db:migrate && bun db:push",
     "dev": "next dev",
     "lint": "next lint",
-    "start": "next start"
+    "start": "next start",
+    "db:seed": "bun run src/server/db/seed.ts",
+    "db:wipe": "bun run src/server/db/wipe.ts",
+    "dev:reseed": "bun db:wipe && bun seed"
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^1.1.0",

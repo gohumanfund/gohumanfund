@@ -1,11 +1,9 @@
 import { createTRPCRouter } from '~/server/api/trpc';
 // import AppRouter from "next/dist/client/components/app-router";
-import { postRouter } from '~/server/api/routers/post';
 import { userRouter } from '~/server/api/routers/user';
-import { subscriptionRouter } from '~/server/api/routers/subscription';
-import { providerRouter } from '~/server/api/routers/provider';
 import { systemRouter } from '~/server/api/routers/system';
 import { type AnyRouter, type inferRouterContext } from '@trpc/server';
+import { learnRouter } from '~/server/api/routers/learn';
 
 /**
  * This is the primary router for your server.
@@ -13,11 +11,9 @@ import { type AnyRouter, type inferRouterContext } from '@trpc/server';
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
-  post: postRouter,
   user: userRouter,
-  subscription: subscriptionRouter,
-  provider: providerRouter,
   system: systemRouter,
+  learn: learnRouter,
 });
 
 // export type definition of API

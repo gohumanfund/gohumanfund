@@ -74,15 +74,18 @@ export const authOptions: NextAuthOptions = {
       if (await isBanned(user.id)) {
         return false;
       }
+      console.log('Allowed sign-in');
       return true;
     },
     session: async ({ session, token }) => {
       if (await isBanned(session.user.id)) {
+        console.log('User is banned');
         return {
           ...session,
           user: { ...session.user, id: token.sub, isBanned: true },
         };
       }
+      console.log('Session:', session);
       return {
         ...session,
         user: {
@@ -93,9 +96,11 @@ export const authOptions: NextAuthOptions = {
     },
     jwt: async ({ token, user }) => {
       if (user) {
+        console.log('User:', user);
         if (await isBanned(user.id)) {
           // Instead of returning null, set a flag on the token
           token.isBanned = true;
+          console.log('Token:', token);
         }
       }
       return token;
