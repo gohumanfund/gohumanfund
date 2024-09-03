@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import React, { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { api } from '~/trpc/react';
-import ManageUsers from '../../components/ManageUsers';
-import SystemStatus from '../../components/SystemStatus';
-import QuickActions from '../../components/QuickActions';
-import AdminTile from '../../components/AdminTile';
+import React, { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { api } from "~/trpc/react";
+import ManageUsers from "../../../../gohuman.fund-old1/src/components/ManageUsers";
+import SystemStatus from "../../../../gohuman.fund-old1/src/components/SystemStatus";
+import QuickActions from "../../../../gohuman.fund-old1/src/components/QuickActions";
+import AdminTile from "../../../../gohuman.fund-old1/src/components/AdminTile";
 
 export default function AdminPage() {
   const router = useRouter();
@@ -14,7 +14,7 @@ export default function AdminPage() {
 
   useEffect(() => {
     if (!isLoading && (!user || !user.admin)) {
-      router.push('/home');
+      router.push("/home");
     }
   }, [user, isLoading, router]);
 
@@ -34,21 +34,21 @@ export default function AdminPage() {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <h1 className="mb-6 text-3xl font-bold">Admin Dashboard</h1>
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
         <AdminTile title="Total Users" value={totalUsers} />
         <AdminTile title="Active Users" value={activeUsers} />
         <AdminTile title="Total Subscriptions" value={totalSubscriptions} />
         <AdminTile title="Active Subscriptions" value={activeSubscriptions} />
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-        <section className="bg-white p-6 rounded-lg shadow-md">
+      <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
+        <section className="rounded-lg bg-white p-6 shadow-md">
           <QuickActions />
         </section>
-        <section className="bg-white p-6 rounded-lg shadow-md">
+        <section className="rounded-lg bg-white p-6 shadow-md">
           <SystemStatus />
         </section>
-        <section className="bg-white p-6 rounded-lg shadow-md col-span-2">
+        <section className="col-span-2 rounded-lg bg-white p-6 shadow-md">
           <ManageUsers />
         </section>
       </div>

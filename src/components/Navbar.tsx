@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { Home, BookOpen, Users, Info, LayoutDashboard } from 'lucide-react';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '~/server/auth';
+import { authOptions } from '~/server/auth.old';
 import { SignOutButton } from './SignOutButton';
 
 export async function Navbar() {
