@@ -3,7 +3,10 @@
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { api } from '~/trpc/react';
-import { AdminTile } from '../_components/AdminTile';
+import CreateProviderForm from '../_components/CreateProviderForm';
+import ManageProviders from '../_components/ManageProviders';
+import ManageUsers from '../_components/ManageUsers';
+import SystemStatus from '../_components/SystemStatus';
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -26,27 +29,17 @@ export default function AdminDashboard() {
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <AdminTile
-          title="Create New Provider"
-          description="Add a new service provider to the system"
-          link="/admin/providers/create"
-        />
-        <AdminTile
-          title="Manage Providers"
-          description="View and edit existing service providers"
-          link="/admin/providers/manage"
-        />
-        <AdminTile
-          title="Manage Users"
-          description="View and manage user accounts"
-          link="/admin/users"
-        />
-        <AdminTile
-          title="System Status"
-          description="View system health and performance metrics"
-          link="/admin/status"
-        />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <section className="bg-white p-6 rounded-lg shadow-md">
+        </section>
+        <section className="bg-white p-6 rounded-lg shadow-md">
+        </section>
+        <section className="bg-white p-6 rounded-lg shadow-md">
+          <ManageUsers />
+        </section>
+        <section className="bg-white p-6 rounded-lg shadow-md">
+          <SystemStatus />
+        </section>
       </div>
     </div>
   );

@@ -29,13 +29,9 @@ export function Dashboard() {
         Unified Subscription Dashboard
       </h1>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <SubscriptionBreakdown subscriptions={subscriptions} />
-        <MonthlySummary subscriptions={subscriptions} />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-        <PaymentAssurance />
         <QuickActions />
-        <Savings />
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-# SubHub Development Action Plan
+# gohumanfund Development Action Plan
 
 ## 1. Project Setup and Infrastructure
 

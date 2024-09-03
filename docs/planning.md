@@ -1,4 +1,4 @@
-# SubHub Technical Specification
+# gohumanfund Technical Specification
 
 ## 1. Technology Stack Overview
 
@@ -26,7 +26,7 @@
 
 ### 2.3 Tailwind CSS Integration
 
-- Custom theme configuration for SubHub's brand colors and typography
+- Custom theme configuration for gohumanfund's brand colors and typography
 - Responsive design implementation using Tailwind's utility classes
 - Component-specific styles using @apply directives where necessary
 
@@ -313,4 +313,4 @@ const userAnalytics = pgTable('user_analytics', {
 - Develop a system to calculate and track the amount of rice donated based on profits
 - Implement reporting features for transparency
 
-This updated technical specification incorporates key business aspects of SubHub, including the tiered pricing model, payment assurance feature, AI-driven recommendations, and environmental initiatives. It provides a comprehensive blueprint for building a scalable, secure, and feature-rich subscription management platform.
+This updated technical specification incorporates key business aspects of gohumanfund, including the tiered pricing model, payment assurance feature, AI-driven recommendations, and environmental initiatives. It provides a comprehensive blueprint for building a scalable, secure, and feature-rich subscription management platform.

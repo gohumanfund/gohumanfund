@@ -1,5 +1,5 @@
 {
-  "name": "subhub",
+  "name": "gohumanfund",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -11,7 +11,7 @@
     "db:studio": "drizzle-kit studio",
     "dev:seed": "bun run src/server/seed.ts",
     "dev:from-scratch": "bun dev:clean && bun dev:seed && bun dev",
-    "dev:clean": "rm -rf drizzle && docker stop $(docker ps -aq) && docker rm $(docker ps -aq) && ./start-database.sh && sleep 10 && bun db:generate && bun db:migrate && bun db:push",
+    "dev:clean": "rm -rf drizzle || true && (docker stop $(docker ps -aq) || true) && (docker rm $(docker ps -aq) || true) && ./start-database.sh && sleep 10 && bun db:generate && bun db:migrate && bun db:push",
     "dev": "next dev",
     "lint": "next lint",
     "start": "next start"

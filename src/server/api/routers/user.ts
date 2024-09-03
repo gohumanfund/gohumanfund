@@ -64,4 +64,47 @@ export const userRouter = createTRPCRouter({
   getAllUsers: protectedProcedure.query(async ({ ctx }) => {
     return ctx.db.select().from(users);
   }),
+
+  createUser: protectedProcedure
+    .input(
+      z.object({
+        name: z.string(),
+        email: z.string().email(),
+        password: z.string().min(8),
+        admin: z.boolean(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      // Check if the current user is an admin
+      const currentUser = await ctx.db.query.users.findFirst({
+        where: eq(users.id, ctx.session.user.id),
+      });
+
+      if (!currentUser?.admin) {
+        throw new Error('Only admins can create new users');
+      }
+
+      const existingUser = await ctx.db
+        .select()
+        .from(users)
+        .where(eq(users.email, input.email));
+      if (existingUser.length > 0) {
+        throw new Error('User already exists');
+      }
+
+      const passwordHash = await bcrypt.hash(input.password, 10);
+      const newUser = await ctx.db
+        .insert(users)
+        .values({
+          id: uuidv4(),
+          email: input.email,
+          passwordHash,
+          name: input.name,
+          planTier: 'Basic',
+          admin: input.admin,
+        })
+        .returning();
+
+      return newUser[0];
+    }),
 });

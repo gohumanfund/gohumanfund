@@ -5,7 +5,7 @@ export default function Home() {
     <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
       <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
         <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
-          Welcome to <span className="text-[hsl(280,100%,70%)]">SubHub</span>
+          Welcome to <span className="text-[hsl(280,100%,70%)]">gohumanfund</span>
         </h1>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
           <Link
@@ -23,7 +23,7 @@ export default function Home() {
           >
             <h3 className="text-2xl font-bold">Sign Up →</h3>
             <div className="text-lg">
-              New to SubHub? Create an account to start managing your
+              New to gohumanfund? Create an account to start managing your
               subscriptions.
             </div>
           </Link>

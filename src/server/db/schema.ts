@@ -14,7 +14,7 @@ import {
 } from 'drizzle-orm/pg-core';
 import { type AdapterAccount } from 'next-auth/adapters';
 
-export const createTable = pgTableCreator((name) => `subhub_${name}`);
+export const createTable = pgTableCreator((name: string) => `gohumanfund_${name}`);
 
 export const users = createTable('user', {
   id: varchar('id', { length: 255 }).notNull().primaryKey(),
@@ -25,11 +25,6 @@ export const users = createTable('user', {
   // Additional custom fields
   passwordHash: varchar('password_hash', { length: 255 }),
   createdAt: timestamp('created_at').defaultNow(),
-  planTier: varchar('plan_tier', { length: 50 }),
-  totalSubscriptionValue: decimal('total_subscription_value', {
-    precision: 10,
-    scale: 2,
-  }),
   bannedReason: text('banned_reason'),
   bannedUntil: timestamp('banned_until'),
   bannedAt: timestamp('banned_at'),
@@ -37,89 +32,6 @@ export const users = createTable('user', {
 });
 
 export const userIsBanned = sql`CASE WHEN "banned_until" IS NOT NULL AND CURRENT_TIMESTAMP < "banned_until" THEN true ELSE false END`;
-
-export const providers = createTable('provider', {
-  id: serial('id').primaryKey(),
-  name: varchar('name', { length: 255 }).notNull(),
-  apiKey: varchar('api_key', { length: 255 }),
-  category: varchar('category', { length: 100 }),
-});
-
-export const subscriptions = createTable('subscription', {
-  id: serial('id').primaryKey(),
-  userId: varchar('user_id', { length: 255 }).references(() => users.id),
-  providerId: integer('provider_id').references(() => providers.id),
-  planName: varchar('plan_name', { length: 255 }),
-  amount: decimal('amount', { precision: 10, scale: 2 }),
-  billingCycle: varchar('billing_cycle', { length: 50 }),
-  nextBillingDate: date('next_billing_date'),
-  status: varchar('status', { length: 50 }),
-});
-
-export const payments = createTable('payment', {
-  id: serial('id').primaryKey(),
-  userId: varchar('user_id', { length: 255 }).references(() => users.id),
-  subscriptionId: integer('subscription_id').references(() => subscriptions.id),
-  amount: decimal('amount', { precision: 10, scale: 2 }),
-  status: varchar('status', { length: 50 }),
-  paymentDate: timestamp('payment_date'),
-});
-
-export const paymentAssurance = createTable('payment_assurance', {
-  id: serial('id').primaryKey(),
-  userId: varchar('user_id', { length: 255 }).references(() => users.id),
-  coveredAmount: decimal('covered_amount', { precision: 10, scale: 2 }),
-  startDate: date('start_date'),
-  endDate: date('end_date'),
-  status: varchar('status', { length: 50 }),
-  recoveryAmount: decimal('recovery_amount', { precision: 10, scale: 2 }),
-});
-
-export const userAnalytics = createTable('user_analytics', {
-  id: serial('id').primaryKey(),
-  userId: varchar('user_id', { length: 255 }).references(() => users.id),
-  totalSaved: decimal('total_saved', { precision: 10, scale: 2 }),
-  subscriptionCount: integer('subscription_count'),
-  lastOptimizationDate: date('last_optimization_date'),
-});
-
-// Relations
-export const usersRelations = relations(users, ({ many }) => ({
-  subscriptions: many(subscriptions),
-  payments: many(payments),
-  paymentAssurances: many(paymentAssurance),
-  analytics: many(userAnalytics),
-}));
-
-export const subscriptionsRelations = relations(subscriptions, ({ one }) => ({
-  user: one(users, { fields: [subscriptions.userId], references: [users.id] }),
-  provider: one(providers, {
-    fields: [subscriptions.providerId],
-    references: [providers.id],
-  }),
-}));
-
-export const paymentsRelations = relations(payments, ({ one }) => ({
-  user: one(users, { fields: [payments.userId], references: [users.id] }),
-  subscription: one(subscriptions, {
-    fields: [payments.subscriptionId],
-    references: [subscriptions.id],
-  }),
-}));
-
-export const paymentAssuranceRelations = relations(
-  paymentAssurance,
-  ({ one }) => ({
-    user: one(users, {
-      fields: [paymentAssurance.userId],
-      references: [users.id],
-    }),
-  })
-);
-
-export const userAnalyticsRelations = relations(userAnalytics, ({ one }) => ({
-  user: one(users, { fields: [userAnalytics.userId], references: [users.id] }),
-}));
 
 // Keep the existing NextAuth-related tables
 export const accounts = createTable(

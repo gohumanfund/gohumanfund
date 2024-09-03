@@ -8,7 +8,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '~/server/auth';
 
 export const metadata: Metadata = {
-  title: 'SubHub - Unified Subscription Management',
+  title: 'gohumanfund - Unified Subscription Management',
   description: 'Manage all your subscriptions in one place',
   icons: [{ rel: 'icon', url: '/favicon.ico' }],
 };

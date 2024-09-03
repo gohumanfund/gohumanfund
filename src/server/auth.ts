@@ -1,6 +1,7 @@
 import { DrizzleAdapter } from '@auth/drizzle-adapter';
 import {
   getServerSession,
+  type User,
   type DefaultSession,
   type NextAuthOptions,
 } from 'next-auth';
@@ -42,6 +43,23 @@ declare module 'next-auth' {
   //   // role: UserRole;
   // }
 }
+async function isBanned(userId: string): Promise<boolean> {
+  // Check if the user is banned
+  const dbUser = await db.query.users.findFirst({
+    where: eq(users.id, userId),
+  });
+
+  if (
+    dbUser?.bannedAt &&
+    dbUser?.bannedUntil &&
+    dbUser?.bannedAt < new Date() &&
+    new Date() < dbUser.bannedUntil
+  ) {
+    console.log('Sign-in blocked: User is banned');
+    return true;
+  }
+  return false; // Allow sign-in to proceed
+}
 
 /**
  * Options for NextAuth.js used to configure adapters, providers, callbacks, etc.
@@ -53,33 +71,32 @@ export const authOptions: NextAuthOptions = {
     signIn: async ({ user, account, profile, email, credentials }) => {
       // Custom logic here
       console.log('Sign-in attempt:', { user, account, profile, email });
-
-      // Check if the user is banned
-      const dbUser = await db.query.users.findFirst({
-        where: eq(users.id, user.id),
-      });
-
-      if (
-        dbUser?.bannedAt &&
-        dbUser?.bannedUntil &&
-        dbUser?.bannedAt < new Date() &&
-        new Date() < dbUser.bannedUntil
-      ) {
-        console.log('Sign-in blocked: User is banned');
+      if (await isBanned(user.id)) {
         return false;
       }
-      return true; // Allow sign-in to proceed
+      return true;
     },
-    session: ({ session, token }) => ({
-      ...session,
-      user: {
-        ...session.user,
-        id: token.sub,
-      },
-    }),
-    jwt: ({ token, user }) => {
+    session: async ({ session, token }) => {
+      if (await isBanned(session.user.id)) {
+        return {
+          ...session,
+          user: { ...session.user, id: token.sub, isBanned: true },
+        };
+      }
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          id: token.sub,
+        },
+      };
+    },
+    jwt: async ({ token, user }) => {
       if (user) {
-        token.id = user.id;
+        if (await isBanned(user.id)) {
+          // Instead of returning null, set a flag on the token
+          token.isBanned = true;
+        }
       }
       return token;
     },
