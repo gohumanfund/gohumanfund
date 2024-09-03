@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Navbar } from "../../../gohuman.fund-old1/src/components/Navbar";
+import { Navbar } from "~/components/Navbar";
 
 export default function HomePage() {
   return (

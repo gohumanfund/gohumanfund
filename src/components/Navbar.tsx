@@ -1,16 +1,28 @@
-import React from 'react';
-import Link from 'next/link';
-import { Home, BookOpen, Users, Info, LayoutDashboard } from 'lucide-react';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '~/server/auth.old';
-import { SignOutButton } from './SignOutButton';
+"use client";
 
-export async function Navbar() {
-  const session = await getServerSession(authOptions);
+import React, { useEffect, useState } from "react";
+import Link from "next/link";
+import { Home, BookOpen, Users, Info, LayoutDashboard } from "lucide-react";
+import { SignOutButton } from "./SignOutButton";
+import { useSession } from "next-auth/react";
+
+export function Navbar() {
+  const { data: session, status } = useSession();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (status !== "loading") {
+      setIsLoading(false);
+    }
+  }, [status]);
+
+  if (isLoading) {
+    return <div>Loading...</div>; // Or any loading indicator
+  }
 
   return (
-    <nav className="bg-gray-800 text-white p-4">
-      <div className="container mx-auto flex justify-between items-center">
+    <nav className="bg-gray-800 p-4 text-white">
+      <div className="container mx-auto flex items-center justify-between">
         <div className="flex space-x-4">
           <Link href="/home" className="flex items-center">
             <Home className="mr-1" size={20} />
@@ -41,7 +53,7 @@ export async function Navbar() {
           ) : (
             <Link
               href="/auth/signin"
-              className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
+              className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
             >
               Sign In/Up
             </Link>
